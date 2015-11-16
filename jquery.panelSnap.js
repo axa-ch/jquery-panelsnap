@@ -173,7 +173,7 @@ if ( typeof Object.create !== 'function' ) {
         return;
       }
 
-      var offset = self.$snapContainer.scrollTop();
+      var offset = self.$snapContainer.scrollLeft();
       var scrollDifference = offset - self.scrollOffset;
       var overThreshold = Math.abs(scrollDifference) > self.options.directionThreshold;
 
@@ -188,7 +188,7 @@ if ( typeof Object.create !== 'function' ) {
       }
 
       var $target = panelsInViewPort.eq(panelNumber);
-      var maxOffset = self.$container[0].scrollHeight - self.scrollInterval;
+      var maxOffset = self.$container[0].scrollWidth - self.scrollInterval;
 
       if (offset <= 0 || offset >= maxOffset) {
         // Only activate, prevent stuttering
@@ -205,8 +205,8 @@ if ( typeof Object.create !== 'function' ) {
 
       var self = this;
 
-      var viewport = { top: self.$snapContainer.scrollTop() };
-      viewport.bottom = viewport.top + self.$snapContainer.height();
+      var viewport = { left: self.$snapContainer.scrollLeft() };
+      viewport.right = viewport.left + self.$snapContainer.width();
 
       var panels = self.getPanel().filter(function (_, el) {
         var $el = $(el);
@@ -216,12 +216,12 @@ if ( typeof Object.create !== 'function' ) {
           bounds = $el.offset();
         } else {
           bounds = $el.position();
-          bounds.top += self.$snapContainer.scrollTop();
+          bounds.left += self.$snapContainer.scrollLeft();
         }
 
-        bounds.bottom = bounds.top + $el.outerHeight();
+        bounds.right = bounds.left + $el.outerWidth();
 
-        return !(viewport.bottom < bounds.top || viewport.top > bounds.bottom);
+        return !(viewport.right < bounds.left || viewport.left > bounds.right);
       });
 
       return panels;
@@ -235,7 +235,7 @@ if ( typeof Object.create !== 'function' ) {
       // Be it a trackpad, legacy mouse or anything else.
 
       if(self.isSnapping) {
-        self.scrollOffset = self.$snapContainer.scrollTop();
+        self.scrollOffset = self.$snapContainer.scrollLeft();
         self.$snapContainer.stop(true);
         self.isSnapping = false;
       }
@@ -256,7 +256,7 @@ if ( typeof Object.create !== 'function' ) {
 
       self.isMouseDown = false;
 
-      if(self.scrollOffset !== self.$snapContainer.scrollTop()) {
+      if(self.scrollOffset !== self.$snapContainer.scrollLeft()) {
         self.scrollStop(e);
       }
 
@@ -363,20 +363,20 @@ if ( typeof Object.create !== 'function' ) {
 
       var scrollTarget = 0;
       if(self.$container.is('body')) {
-        scrollTarget = $target.offset().top;
+        scrollTarget = $target.offset().left;
       } else {
-        scrollTarget = self.$snapContainer.scrollTop() + $target.position().top;
+        scrollTarget = self.$snapContainer.scrollLeft() + $target.position().left;
       }
 
       scrollTarget -=  self.options.offset;
 
       self.$snapContainer.stop(true).delay(self.options.delay).animate({
-        scrollTop: scrollTarget
+        scrollLeft: scrollTarget
       }, self.options.slideSpeed, self.options.easing, function() {
 
-        // Set scrollOffset to scrollTop
+        // Set scrollOffset to scrollLeft
         // (not to scrollTarget since on iPad those sometimes differ)
-        self.scrollOffset = self.$snapContainer.scrollTop();
+        self.scrollOffset = self.$snapContainer.scrollLeft();
         self.isSnapping = false;
 
         // Call callback
@@ -503,7 +503,7 @@ if ( typeof Object.create !== 'function' ) {
       var self = this;
 
       // Gather scrollOffset for next scroll
-      self.scrollOffset = self.$snapContainer.scrollTop();
+      self.scrollOffset = self.$snapContainer.scrollLeft();
 
       self.enabled = true;
 
